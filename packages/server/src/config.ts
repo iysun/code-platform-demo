@@ -27,31 +27,21 @@ if (dbUrl.startsWith("file:")) {
   databasePath = resolvePath("./data/app.db");
 }
 
-const agentProviderRaw = process.env.AGENT_PROVIDER?.trim().toLowerCase();
-const agentProvider =
-  agentProviderRaw === "claude" ? "claude" : ("deepseek" as const);
-
 export const appConfig = {
   projectRoot,
   workspaceRoot,
   databasePath,
   port: Number(process.env.PORT ?? 8787),
-  agentProvider,
-  anthropicApiKey: process.env.ANTHROPIC_API_KEY?.trim() ?? "",
-  claudeModel: process.env.CLAUDE_MODEL?.trim() ?? "claude-sonnet-4-20250514",
-  deepseekApiKey: process.env.DEEPSEEK_API_KEY?.trim() ?? "",
-  deepseekBaseUrl:
-    process.env.DEEPSEEK_BASE_URL?.trim() ?? "https://api.deepseek.com",
-  deepseekModel: process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-chat",
+  model: process.env.CLAUDE_MODEL?.trim() ?? "claude-sonnet-4-20250514",
   allowDangerousPermissions:
     process.env.ALLOW_DANGEROUS_PERMISSIONS === "true",
 };
 
 export function hasLlmCredentials(): boolean {
-  if (appConfig.agentProvider === "deepseek") {
-    return Boolean(appConfig.deepseekApiKey);
-  }
-  return Boolean(appConfig.anthropicApiKey);
+  return Boolean(
+    process.env.ANTHROPIC_API_KEY?.trim() ||
+      process.env.ANTHROPIC_AUTH_TOKEN?.trim()
+  );
 }
 
 export function validateConfig(): void {
@@ -60,21 +50,15 @@ export function validateConfig(): void {
       `WORKSPACE_ROOT does not exist: ${appConfig.workspaceRoot}`
     );
   }
-  if (appConfig.agentProvider === "deepseek") {
-    if (!appConfig.deepseekApiKey) {
-      console.warn(
-        "[warn] DEEPSEEK_API_KEY is not set — chat requests will fail."
-      );
-    } else {
-      console.log(
-        `[info] Agent provider: deepseek (${appConfig.deepseekModel})`
-      );
-    }
-  } else if (!appConfig.anthropicApiKey) {
+  if (!hasLlmCredentials()) {
     console.warn(
-      "[warn] ANTHROPIC_API_KEY is not set — chat requests will fail."
+      "[warn] ANTHROPIC_API_KEY (or ANTHROPIC_AUTH_TOKEN) is not set — chat requests will fail."
     );
   } else {
-    console.log(`[info] Agent provider: claude (${appConfig.claudeModel})`);
+    const base = process.env.ANTHROPIC_BASE_URL?.trim();
+    console.log(`[info] Agent model: ${appConfig.model}`);
+    if (base) {
+      console.log(`[info] ANTHROPIC_BASE_URL: ${base}`);
+    }
   }
 }

@@ -41,27 +41,26 @@ pnpm dev
 
 | 变量 | 说明 |
 |------|------|
-| `AGENT_PROVIDER` | `deepseek`（默认）或 `claude` |
-| `DEEPSEEK_API_KEY` | DeepSeek API Key（OpenAI 兼容） |
-| `DEEPSEEK_BASE_URL` | 默认 `https://api.deepseek.com` |
-| `DEEPSEEK_MODEL` | 默认 `deepseek-chat` |
-| `ANTHROPIC_API_KEY` | Claude Agent SDK 用（`AGENT_PROVIDER=claude` 时） |
+| `ANTHROPIC_API_KEY` | Anthropic API Key（或兼容端点的 Key） |
+| `ANTHROPIC_AUTH_TOKEN` | 可选，与 Claude Code 相同；未设 `ANTHROPIC_API_KEY` 时可代替 |
+| `ANTHROPIC_BASE_URL` | 可选，第三方 Anthropic 兼容 API 根地址 |
+| `CLAUDE_MODEL` | 默认 `claude-sonnet-4-20250514` |
 | `WORKSPACE_ROOT` | Agent 工作目录（绝对或相对项目根） |
 | `DATABASE_URL` | 默认 `file:./data/app.db` |
 | `PORT` | 默认 `8787` |
-| `CLAUDE_MODEL` | 默认 `claude-sonnet-4-20250514` |
-| `ALLOW_DANGEROUS_PERMISSIONS` | `true` 时自动批准工具（仅 Claude 模式） |
+| `ALLOW_DANGEROUS_PERMISSIONS` | `true` 时自动批准工具（本地演示用） |
 
-### 使用 DeepSeek 测试
+### 使用 DeepSeek 等兼容端点
 
-在 `.env` 中设置：
+与官方 Claude 相同，仅改环境变量（见 [DeepSeek Anthropic API](https://api-docs.deepseek.com/guides/anthropic_api)）：
 
 ```bash
-AGENT_PROVIDER=deepseek
-DEEPSEEK_API_KEY=sk-...
+ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+ANTHROPIC_API_KEY=sk-...
+CLAUDE_MODEL=deepseek-v4-pro
 ```
 
-DeepSeek 模式通过 OpenAI SDK 调用，并启用演示用自定义工具（`read_file` / `list_directory` / `search_code`）。切换回 Claude Agent SDK 时设 `AGENT_PROVIDER=claude` 并配置 `ANTHROPIC_API_KEY`。
+工具与 Anthropic 直连相同（内置 `Read`/`Grep` + MCP `mcp__demo__*`）。
 
 ## 工具名对照
 

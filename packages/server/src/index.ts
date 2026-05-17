@@ -31,15 +31,11 @@ app.get("/api/health", async (c) => {
   }
   return c.json({
     ok: true,
-    agentProvider: appConfig.agentProvider,
     workspaceRoot: appConfig.workspaceRoot,
     databasePath: appConfig.databasePath,
     db: dbOk ? "ok" : "error",
     hasApiKey: hasLlmCredentials(),
-    model:
-      appConfig.agentProvider === "deepseek"
-        ? appConfig.deepseekModel
-        : appConfig.claudeModel,
+    model: appConfig.model,
   });
 });
 
@@ -55,7 +51,7 @@ serve(
     console.log(
       `code-platform-demo server listening on http://localhost:${info.port}`
     );
-    console.log(`  provider:  ${appConfig.agentProvider}`);
+    console.log(`  model:     ${appConfig.model}`);
     console.log(`  workspace: ${appConfig.workspaceRoot}`);
     console.log(`  database:  ${appConfig.databasePath}`);
   }

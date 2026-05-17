@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { stream } from "hono/streaming";
 import { z } from "zod";
-import { runAgentChat } from "../agent/run-chat.js";
+import { runChat } from "../agent/run-query.js";
 import { formatSse } from "../agent/sse-events.js";
 import { appConfig, hasLlmCredentials } from "../config.js";
 import { sessionRepo } from "../repositories/session-repo.js";
@@ -15,11 +15,10 @@ export const chatRoutes = new Hono();
 
 chatRoutes.post("/", async (c) => {
   if (!hasLlmCredentials()) {
-    const keyName =
-      appConfig.agentProvider === "deepseek"
-        ? "DEEPSEEK_API_KEY"
-        : "ANTHROPIC_API_KEY";
-    return c.json({ error: `${keyName} is not configured` }, 503);
+    return c.json(
+      { error: "ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN is not configured" },
+      503
+    );
   }
 
   const parsed = chatBodySchema.safeParse(await c.req.json());
@@ -51,7 +50,7 @@ chatRoutes.post("/", async (c) => {
       formatSse({ type: "session", sessionId: sessionId! })
     );
 
-    await runAgentChat({
+    await runChat({
       sessionId: sessionId!,
       prompt,
       isFirstUserMessage,

@@ -8,7 +8,7 @@ export function buildAgentOptions(sdkSessionId?: string | null): Options {
 
   return {
     cwd: appConfig.workspaceRoot,
-    model: appConfig.claudeModel,
+    model: appConfig.model,
     resume: sdkSessionId ?? undefined,
     mcpServers: { demo: demoServer },
     allowedTools: [...DEMO_ALLOWED_TOOLS],
@@ -25,7 +25,6 @@ export function buildAgentOptions(sdkSessionId?: string | null): Options {
     maxTurns: 20,
     env: {
       ...process.env,
-      ANTHROPIC_API_KEY: appConfig.anthropicApiKey,
       CLAUDE_AGENT_SDK_CLIENT_APP: "code-platform-demo",
     },
   };

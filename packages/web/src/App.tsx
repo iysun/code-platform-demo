@@ -76,7 +76,7 @@ export default function App() {
         <header className="header">
           <strong>code-platform-demo</strong>
           {" · "}
-          {health?.agentProvider ?? "…"} / {health?.model ?? "…"}
+          {health?.model ?? "…"}
           {" · "}
           工作区: {health?.workspaceRoot ?? "…"}
           {health && !health.hasApiKey && (

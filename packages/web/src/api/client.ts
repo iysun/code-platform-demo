@@ -1,6 +1,5 @@
 export type HealthResponse = {
   ok: boolean;
-  agentProvider?: string;
   model?: string;
   workspaceRoot: string;
   databasePath: string;
