@@ -1,0 +1,16 @@
+{
+  "name": "code-platform-demo",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm run --parallel dev",
+    "build": "pnpm run -r build",
+    "db:generate": "pnpm --filter @code-platform-demo/server db:generate",
+    "db:migrate": "pnpm --filter @code-platform-demo/server db:migrate"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}
